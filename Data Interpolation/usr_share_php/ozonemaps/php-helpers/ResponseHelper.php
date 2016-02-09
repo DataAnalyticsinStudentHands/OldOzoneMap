@@ -1,5 +1,5 @@
 <?php
-require_once('nebula/BSplineHelper.php');
+require_once('BSplineHelper.php');
 class ResponseHelper {
     const LV_TRUE = 500;
     const LV_FALSE = 1000;

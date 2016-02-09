@@ -1,0 +1,10 @@
+# build JAR
+javac -g *.java
+mv *.class LatLongInterpolation_testing/
+rm latlng_testing.jar 
+jar cvf latlng_testing.jar LatLongInterpolation_testing
+sudo cp -a latlng_testing.jar /var/lib/tomcat6/webapps/JavaBridge/WEB-INF/lib/
+sudo /etc/init.d/tomcat6 restart
+
+# testing
+/usr/bin/php /var/www/html/test/ozonemaps/api/tools/calculategrid_testing.php 1330639500 -1 4
