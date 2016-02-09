@@ -1,0 +1,24 @@
+***Last updated by DF on 1/19/14
+
+ORIGINAL LOCATION
+/mnt/ibreathe/TCEQ/scripts
+
+SUMMARY
+These files are used only for the "pull" data requests from TCEQ and for archiving old logs and data. The folder also includes configuration and source files for "openconnect", a command-line tool Mark has installed for use by the "pull" scripts. The scripts were originally called via cron jobs under Mark's user account:
+
+30 0 * * *  /mnt/ibreathe/TCEQ/scripts/insert_daily_data.sh >> /mnt/ibreathe/TCEQ/log/insert_daily.$(date +"\%Y-\%m-\%d").log 2>&1
+*/5 * * * *  /mnt/ibreathe/TCEQ/scripts/insert_quick_look.sh >> /mnt/ibreathe/TCEQ/log/insert_quick_look.$(date +"\%Y-\%m-\%d").log 2>&1
+
+## fetch TCEQ data
+15 0 * * * /mnt/ibreathe/TCEQ/scripts/fetch_data_extractor.daily.met.sh >> /mnt/ibreathe/TCEQ/log/fetch_data_extractor_daily.met.$(date +"\%Y-\%m").log 2>&1
+5 0 * * * /mnt/ibreathe/TCEQ/scripts/fetch_data_extractor.daily.o3.sh >> /mnt/ibreathe/TCEQ/log/fetch_data_extractor_daily.o3.$(date +"\%Y-\%m").log 2>&1
+
+9,24,39,54 * * * * /mnt/ibreathe/TCEQ/scripts/fetch_quick_look.o3.sh >> /mnt/ibreathe/TCEQ/log/fetch_quick_look.o3.$(date +"\%Y-\%m").log 2>&1
+13,28,43,58 * * * * /mnt/ibreathe/TCEQ/scripts/fetch_quick_look.met.sh >> /mnt/ibreathe/TCEQ/log/fetch_quick_look.met.$(date +"\%Y-\%m").log 2>&1
+
+## compress data and log
+1 0 */5 * * /mnt/ibreathe/TCEQ/scripts/compress_arhive_logs.sh >> /mnt/ibreathe/TCEQ/log/archive_log.$(date +"\%Y-\%m").log 2>&1
+1 1 */5 * * /mnt/ibreathe/TCEQ/scripts/compress_data_files.sh >> /mnt/ibreathe/TCEQ/log/compress_data.$(date +"\%Y-\%m").log 2>&1
+
+TODO
+* Many of these files are older versions or are only used in outdated workflows and can be removed

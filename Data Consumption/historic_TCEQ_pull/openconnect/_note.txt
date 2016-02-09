@@ -1,0 +1,26 @@
+# openconnect web site
+http://www.infradead.org/openconnect.html
+
+# source:
+ftp://ftp.infradead.org/pub/openconnect/openconnect-2.26.tar.gz
+
+## using openconnect (run as root)
+
+### openconnect --script /tmp/vpnc-script --user=TCEQBRap --authgroup=ASAweb https://vpn.tceq.state.tx.us
+### openconnect --script ~/work/hnet/TCEQ_VPN/vpnc-script/vpnc-script.tceq --disable-ipv6 --no-dtls --user=TCEQBRap --authgroup=ASAweb vpn.tceq.state.tx.us
+
+
+## manually connect (need to type in password)
+##openconnect --script /root/openconnect/vpnc-script.tceq --disable-ipv6 --no-dtls --no-cert-check --user=TCEQBRap --authgroup=ASAweb vpn.tceq.state.tx.us
+openconnect --script /root/openconnect/vpnc-script.tceq --disable-ipv6 --no-dtls --no-cert-check --user=TCEQDPri --authgroup=ASAweb vpn.tceq.state.tx.us
+
+elinks -source 0 "http://163.234.120.84/cgi-bin/quick_look.pl?param=44201&view_hours=2&&ordinal=1&region_crit=12&include_CAMS=1&include_TAMS=1&include_HOUSTON=1&include_HARRIS_CNTY=1&include_HRM=1&include_EISM=1" > temp/ee2.txt
+
+
+## using start up script
+  637  /root/openconnect/openconnect.init.sh 
+  638  /root/openconnect/openconnect.init.sh stop
+  639  /root/openconnect/openconnect.init.sh start
+
+## collect data via cron job
+*/5 * * * * /home/tihuang/fetch_latest.cron.sh > /dev/null 2>&1

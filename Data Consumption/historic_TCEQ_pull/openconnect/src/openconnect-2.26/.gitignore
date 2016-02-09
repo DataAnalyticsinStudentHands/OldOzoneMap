@@ -1,0 +1,9 @@
+*~
+.#*
+version.c
+.*.o.dep
+.*.h.dep
+*.o
+openconnect
+nm-openconnect-auth-dialog
+Make.config

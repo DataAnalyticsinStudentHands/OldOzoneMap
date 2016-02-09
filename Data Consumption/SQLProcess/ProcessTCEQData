@@ -1,0 +1,85 @@
+DELIMITER ;;
+CREATE DEFINER=`admin`@`%` PROCEDURE `processTCEQData`(IN inputFileName varchar(14))
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  
+  DECLARE varSiteID varchar(11);
+  DECLARE varTimeStamp varchar(14);
+  DECLARE varParam mediumint(5);
+  DECLARE varValue decimal(8,5);
+  DECLARE varFlag varchar(3);
+  DECLARE varID int(20);
+  DECLARE varEpoch int(10);
+  DECLARE varPushYear int(4);
+  
+  DECLARE curTCEQPushYear CURSOR FOR SELECT DISTINCT Left(timeStamp, 4) FROM ibh_tceq_push WHERE fileName=inputFileName ORDER BY timeStamp; 
+  
+  DECLARE curTCEQPush CURSOR FOR SELECT SiteID, timeStamp, param, value, flag, ID, UNIX_TIMESTAMP(timeStamp) FROM ibh_tceq_push WHERE processed = 0 and flag="VAL" and fileName=inputFileName ORDER BY ID;
+  
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN curTCEQPushYear;
+  OPEN curTCEQPush;
+
+  SET done = FALSE;
+
+  read_loop: LOOP
+  	FETCH curTCEQPushYear INTO varPushYear;
+  	IF done THEN 
+ 	  LEAVE read_loop;
+  	END IF;
+  	
+  	SET @varPushYear = varPushYear;
+
+	SET @stmt = 'SELECT COUNT(*) INTO @numRows FROM information_schema.tables WHERE table_schema = \'ibreathedb\' AND table_name = ?;';
+	PREPARE stmt FROM @stmt;
+	SET @tblName = CONCAT('ibh_data_year_',@varPushYear);
+	EXECUTE stmt USING @tblName;
+
+	IF @numRows=0 THEN
+	  /* If ibh_data_year_[YYYY] table does not exist then create it */
+	  SET @stmt = CONCAT('CREATE TABLE ibh_data_year_', @varPushYear, ' ( epoch int(10) unsigned NOT NULL, siteID varchar(11) NOT NULL DEFAULT \'\', redraw boolean DEFAULT NULL,o3 decimal(8,5) DEFAULT NULL, o3_flag varchar(1) DEFAULT NULL, temp decimal(8,5) DEFAULT NULL, temp_flag varchar(1) DEFAULT NULL, windspd decimal(8,5) DEFAULT NULL, windspd_flag varchar(1) DEFAULT NULL, winddir decimal(8,5) DEFAULT NULL, winddir_flag varchar(1) DEFAULT NULL, humid decimal(8,5) DEFAULT NULL, humid_flag varchar(1) DEFAULT NULL, pm25 decimal(8,5) DEFAULT NULL, pm25_flag varchar(1) DEFAULT NULL, solar decimal(8,5) DEFAULT NULL, solar_flag varchar(1) DEFAULT NULL, so2 decimal(8,5) DEFAULT NULL, so2_flag varchar(1) DEFAULT NULL, no2 decimal(8,5) DEFAULT NULL, no2_flag varchar(1) DEFAULT NULL, nox decimal(8,5) DEFAULT NULL, nox_flag varchar(1) DEFAULT NULL, no decimal(8,5) DEFAULT NULL, no_flag varchar(1) DEFAULT NULL, co decimal(8,5) DEFAULT NULL, co_flag varchar(1) DEFAULT NULL, dew decimal(8,5) DEFAULT NULL, dew_flag varchar(1) DEFAULT NULL, pm25aqi decimal(8,5) DEFAULT NULL, pm25aqi_flag varchar(1) DEFAULT NULL, PRIMARY KEY (epoch,siteID)) ENGINE=MyISAM DEFAULT CHARSET=latin1;');
+	  PREPARE stmt FROM @stmt;
+	  EXECUTE stmt;
+	END IF;
+		
+	SET @stmt = CONCAT('INSERT INTO ibh_data_year_', @varPushYear, ' (epoch, siteID) Select distinct UNIX_TIMESTAMP(a.timeStamp), a.siteID FROM ibh_tceq_push a left outer JOIN ibh_data_year_', @varPushYear, ' b on UNIX_TIMESTAMP(a.timeStamp)=b.epoch and a.siteID = b.siteID WHERE b.siteID is null and a.flag="VAL" and a.fileName=\'', inputFileName, '\'and a.processed = 0 and timeStamp like \'', @varPushYear ,'%\';');
+	PREPARE stmt FROM @stmt;
+	EXECUTE stmt;
+	
+  END LOOP;
+
+  SET done = FALSE;
+
+  START TRANSACTION;
+
+  read_loop: LOOP
+    FETCH curTCEQPush INTO varSiteID, varTimeStamp, varParam, varValue, varFlag, varID, varEpoch;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;        
+        
+    SET @varPushYear = LEFT(varTimeStamp, 4);
+    SET @varPushInst = NULL;
+    SET @varPushInstFlag = NULL;
+    SELECT inst INTO @varPushInst FROM ibh_param WHERE param=varParam;
+		
+	IF @varPushInst IS NULL THEN
+		SET done = FALSE;		
+	ELSE
+	  SET @varPushInstFlag = CONCAT(@varPushInst, "_flag");
+ 	  set @stmt = CONCAT('UPDATE ibh_data_year_', @varPushYear, ' SET redraw=TRUE, ', @varPushInst, '=\'', varValue, '\', ', @varPushInstFlag, '=\'K\' WHERE epoch=\'', varEpoch, '\' and siteID=\'', varSiteID, '\';');	
+ 	  PREPARE stmt FROM @stmt;
+	  EXECUTE stmt;
+
+ 	  UPDATE ibh_tceq_push SET processed = 1 WHERE ID=varID;
+	END IF;
+	
+  END LOOP;
+
+  COMMIT;
+
+  CLOSE curTCEQPush;
+  CLOSE curTCEQPushYear;
+END;;
+DELIMITER ;
