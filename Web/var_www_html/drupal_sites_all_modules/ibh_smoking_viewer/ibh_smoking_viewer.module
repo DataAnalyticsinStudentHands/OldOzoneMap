@@ -1,0 +1,189 @@
+<?php
+
+/**
+ * @file
+ * Core functionality of the IBH Smoking Viewer.
+ */
+
+
+/**
+ * Implements hook_menu().
+ */
+function ibh_smoking_viewer_menu() {
+  $items = array();
+  $items['smoking-viewer'] = array(
+    'title' => 'Smoking Viewer',
+    'page callback' => 'ibh_smoking_viewer_default',
+    'access arguments' => array('access smoking viewer'),
+    'file' => 'inc/ibh_smoking_viewer_default.inc',
+  );
+  $items['admin/config/system/smoking-viewer'] = array(
+    'title' => 'Smoking Viewer',
+    'description' => 'Edit Smoking Viewer settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ibh_smoking_viewer_settings'),
+    'access arguments' => array('administer smoking viewer'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'inc/ibh_smoking_viewer.admin.inc',
+  );
+  return $items;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function ibh_smoking_viewer_permission() {
+  return array(
+    'access smoking viewer' => array(
+      'title' => t('Access Smoking Viewer'),
+      'restrict access' => FALSE,
+    ),
+    'administer smoking viewer' => array(
+      'title' => t('Administer Smoking Viewer'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+
+/**
+* Implementation of hook_theme().
+*/
+function ibh_smoking_viewer_theme(){
+  $theme = array();
+  $theme['page__ibh-smoking-viewer'] = array(
+    'path' => drupal_get_path('module', 'ibh_smoking_viewer'),
+    'template' => 'templates/page--ibh-smoking-viewer',
+    'variables' => array('variables' => NULL),
+    'type' => 'module'
+  );
+  return $theme;
+}
+
+
+/**
+* Implementation of hook_preprocess_page().
+*/
+function ibh_smoking_viewer_preprocess_page(&$vars) {
+
+  $aqi_object_str = variable_get('aqi_object', ibh_smoking_viewer_default_aqi_definition());
+  $aqi_object_str = preg_replace('/\s+/', ' ', $aqi_object_str);
+  $aqi_object = @json_decode('{'.$aqi_object_str.'}');
+
+  $ts = floor(time() / 300) * 300;
+
+  $api_url = variable_get('smoking_api_url', '/');
+
+  drupal_add_js(array('ibh_smoking_viewer' => array('now' => $ts, 'aqi' => $aqi_object, 'api_url' => $api_url)), 'setting');
+
+  //$vars['timestamp_menus'] = _ibh_smoking_viewer_date_picker('timeline-', 2012, 2012, date("Y"), date("n"), date("j"));
+  // use current year
+  $vars['timestamp_menus'] = _ibh_smoking_viewer_date_picker('timeline-', 2012, date("Y"), date("Y"), date("n"), date("j"));
+
+  if (arg(0)=='smoking-viewer') {
+    $vars['theme_hook_suggestions'][] = 'page__ibh-smoking-viewer';
+  }
+
+  return $vars;
+}
+
+
+/**
+ * Implements hook_theme_registry_alter()
+**/
+function ibh_smoking_viewer_theme_registry_alter(&$theme_registry) {
+  $mod_path = drupal_get_path('module', 'ibh_smoking_viewer');
+  $theme_registry_copy = $theme_registry;       // munge on a copy
+  _theme_process_registry($theme_registry_copy, 'phptemplate', 'theme_engine', 'pow', $mod_path);
+  $theme_registry += array_diff_key($theme_registry_copy, $theme_registry);
+  $hooks = array('node');
+  foreach ($hooks as $h) {
+    _ibh_smoking_viewer_insert_after_first_element($theme_registry[$h]['theme paths'], $mod_path);
+  }
+}
+
+
+/**
+ * Helper function for re-ordering arrays (needed by theme_registry_alter)
+*/
+function _ibh_smoking_viewer_insert_after_first_element(&$a, $element) {
+  if(is_array($a)) {
+    $first_element = array_shift($a);
+    array_unshift($a, $first_element, $element);
+  }
+}
+
+
+function _ibh_smoking_viewer_date_picker($name, $startyear=NULL, $endyear=NULL, $year = false, $month = false, $day = false) {
+    
+  if($startyear==NULL) {
+    $startyear = date("Y")-100;
+  }
+
+  if($endyear==NULL){
+    $endyear=date("Y")+50;
+  }
+
+  $months=array('','January','February','March','April','May',
+  'June','July','August', 'September','October','November','December');
+
+  // Month dropdown.
+  $html="<select name=\"".$name."month\" id=\"".$name."month\">";
+
+  for($i=1;$i<=12;$i++) {
+    if ($month == $i) {
+      $sel = ' selected="selected"';
+    }
+    else {
+      $sel = '';
+    }
+    $html.="<option value='$i'".$sel.">$months[$i]</option>";
+  }
+  $html.="</select> ";
+   
+  // Day dropdown.
+  $html.="<select name=\"".$name."day\" id=\"".$name."day\">";
+  for($i=1;$i<=31;$i++) {
+    if ($day == $i) {
+      $sel = ' selected="selected"';
+    }
+    else {
+      $sel = '';
+    }
+    $html.="<option value='$i'".$sel.">$i</option>";
+  }
+  $html.="</select> ";
+
+  // Year dropdown.
+  $html.="<select name=\"".$name."year\" id=\"".$name."year\">";
+
+  for($i=$startyear;$i<=$endyear;$i++){
+    if ($year == $i) {
+      $sel = ' selected="selected"';
+    }
+    else {
+      $sel = '';
+    }
+    $html.="<option value='$i'".$sel.">$i</option>";
+  }
+  $html.="</select> ";
+
+  return $html;
+}
+
+/**
+ * Implements Default Smoking AQI Definition().
+ */
+function ibh_smoking_viewer_default_aqi_definition() {
+
+   $default_aqi_obj = '"0": { "color": "3FAE4A", "label": "green", "opacity": "0.45", "title": "Good"},
+"60": { "color": "F6EC26", "label": "yellow", "opacity": "0.45", "title": "Moderate"},
+"76": { "color": "EE5828", "label": "orange", "opacity": "0.45", "title": "Warning"},
+"96": { "color": "B8212B", "label": "red", "opacity": "0.45", "title": "Unhealthy"},
+"116": { "color": "9A1E51", "label": "purple", "opacity": "0.45", "title": "Very Unhealthy"},
+"136": { "color": "451427", "label": "maroon", "opacity": "0.45", "title": "Hazardous"}';
+
+  return $default_aqi_obj;
+
+}

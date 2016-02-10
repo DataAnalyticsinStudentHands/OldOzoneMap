@@ -1,0 +1,99 @@
+#timeline-wrapper {
+	position: absolute;
+	bottom: 40px;
+	left: 0px;
+	right: 0px;
+	height: 130px;
+	background: rgba(55, 55, 55, 0.75);
+}
+
+#transition {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+.nv-axis .tick {
+	color: white;
+	opacity: .1;
+	stroke-color: white !important;
+	stroke-opacity: .1 !important;
+}
+
+.nv-axis text {
+	/*visibility: hidden;*/
+}
+
+.nv-axis .domain {
+	/*visibility: hidden;*/
+}
+
+.nv-x .nv-axis .nv-axisMaxMin text {
+	visibility: hidden;
+}
+
+.nv-y .nv-axis text {
+	visibility: hidden;
+}
+
+.nv-y .nv-axis .nv-axisMaxMin text {
+	visibility: visible;
+}
+
+.nvtooltip {
+	color: white;
+	padding: 0;
+	border: none;
+	background-color: rgba(22,22,22,.75);
+}
+
+.nvtooltip h3 {
+	background: transparent;
+	border: none;
+	border-radius: 0;
+	border-top-width: 8px;
+	border-top-style: solid;
+}
+
+.nvtooltip table {
+	width: 90%;
+	margin: auto;
+}
+
+.nvtooltip td {
+	text-align: center;
+}
+
+.nvtooltip:after {
+	content: "";
+	display: block;
+	position: absolute;
+	border: 10px solid transparent;
+	width: 0px;
+	height: 0px;
+	border-top-color: rgba(22,22,22,.75);
+	bottom: -20px;
+	left: 50%;
+	margin-left: -10px;
+}
+
+.nv-group path {
+	stroke-opacity: .5;
+	fill-opacity: 1;
+}
+
+.nvd3 .nv-brushBackground rect {
+	stroke: #444;
+	fill: #333;
+	stroke-opacity: .6;
+	fill-opacity: .7;
+	stroke-width: 2;
+}
+
+circle {
+	visibility: hidden;
+}
+
+#timeline-wrapper .vertical {
+	/*transition: all 0.1s ease;*/
+}

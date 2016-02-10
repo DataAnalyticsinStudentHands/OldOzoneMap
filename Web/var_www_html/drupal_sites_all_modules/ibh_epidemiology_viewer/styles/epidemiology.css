@@ -1,0 +1,295 @@
+#footer-viewer select {
+    margin-top: 11px;
+    background: black;
+    color: #fff;
+    border: none;
+    font-size: 12px;
+    font-weight: normal;
+    font-family: 'Open Sans', 'Arial', sans-serif;
+}
+
+#menuArea {
+    border-right: 1px solid #000;
+	position: absolute;
+	top: 0px;
+	left: 5px;
+}
+
+#selectArea {
+    border-right: 1px solid #000;
+	position: absolute;
+	top: 0px;
+	left: 265px;
+}
+
+#selectArea label {
+	color: white;
+	font-weight: normal;
+	display: inline-block;
+	margin-right: 5px;
+	margin-left: 25px;
+	font-size: 11px;
+}
+
+#searchArea {
+	display: none;
+    padding: 2px 0 0 10px;
+	position: absolute;
+	font-size: 12px;
+	font-weight: normal;
+	top: 0;
+	right: 160px;
+}
+
+#searchLabel {
+    padding: 0 5px 0 8px;
+	display: inline-block;
+	font-weight: normal;
+	display: none;
+}
+
+#searchInput {
+	display: inline-block;
+	padding: 4px 0px;
+}
+
+#address {
+/*    background-color: #555;
+    border: none;
+    color: #ffffff;
+    font-size: 12px;
+	padding: 4px 10px;
+    width: 230px;*/
+	display:inline-block;
+}
+
+#searchButton {
+    background-color: #333;
+    border: 1px solid #000000;
+    color: #FFFFFF;
+    margin-left: -3px;
+    padding: 4px 6px 3px;
+	display: inline-block;
+}
+
+.infoBox {
+	color: white;
+/*	padding: 0;
+	left: 0 !important;
+	top: 0 !important;
+	right: 0 !important;
+	padding: 12px 24px 0px 6px;
+*/
+	padding-bottom: 10px;
+	width: 180px;
+	background-color: rgba(22,22,22,.85);
+}
+
+.infoBox:after {
+	content: "";	
+	display: block;
+	position: absolute;
+	border: 10px solid transparent;
+	border-bottom-width: 0px;
+	border-top-color: rgba(22,22,22,.85);
+	bottom: -10px;
+	left: 50%;
+	width: 0;
+	height: 0;
+	margin-left: -10px;
+}
+
+.infoBox img {
+	width: 12px;
+}
+
+.infoBox p {
+	padding: 0px 5px;
+	text-align: center;
+	margin: auto;
+	color: white;
+	border-radius: 15px;
+}
+
+.infoBox h3 {
+	background: transparent;
+	border: none;
+	margin: 0;
+	padding: 5px 10px;
+	text-align: center;
+	border: none;
+	border-top-width: 16px;
+	border-top-style: solid;
+}
+
+#buttonArea {
+	position:absolute;
+	right: 170px;
+	top: 10px;
+}
+
+#layers_scroll {
+	max-height: 330px;
+	width: 100%;
+	overflow-y: scroll;
+}
+
+#layers_list, #layers_list > li {
+	list-style: none;
+}
+
+#layers_list li {
+	padding: 3px;
+	text-align: center;
+	height: 120px;
+}
+
+#layers_list table, #layers_list table td {
+	border: 1px solid white;
+}
+
+#layers_list li span {
+	display: inline-block;
+}
+
+#layers_list li input {
+	margin: 0 5px;
+}
+
+#layers_list li input[type=range] {
+	float: left;
+	clear: left;
+	width: 65px;
+}
+
+#layers_list > li:nth-child(2n+1) {
+	background: rgba(255,255,255,.2);
+}
+
+#layers_list li img {
+	display: inline-block;
+	background: url(../images/houston_roads.png);
+	background-position: center center;
+	background-size: 180% 200%;
+	box-shadow: 0px 0px 5px rgba(0,0,0,.5);
+	margin: 0px 20px 0px 0px;
+	height: 100px;
+	float: left;
+	clear: left;
+}
+
+#layers > table#overlay-types {
+	width: 100%;
+}
+
+#layers > table#overlay-types td {
+	border: 1px solid white;
+}
+
+#layers h3, .popupmenu h3 {
+	text-align: center;
+	padding: 2px;
+	margin: 0 auto;
+}
+
+#fileprefs {
+	overflow-y: scroll;
+	position: absolute;
+	top: 75px;
+	bottom: 35px;
+	left: 15px;
+	right: 15px;
+	margin: auto;
+	text-align: left;
+}
+
+.popupmenu {
+	display: none;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	background: #383938;
+	color: white;
+	right: 10px; 
+	z-index: 800; 
+	border: 1px solid #000;
+	width: 500px;
+	margin-left: -250px;
+	height: 200px;
+	margin-top: -100px;
+	overflow: hidden;
+	text-align: center;
+}
+
+.popupmenu input[type='file'] {
+	background: #99b3cc;
+	padding: 3px 8px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px; 
+	border-radius: 3px;
+	font-size: 11px;
+	margin: 2px auto;	
+}
+
+.popupmenu button, .popupmenu input[type='submit'] {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+}
+
+.popupmenu button {
+	right: 65px;
+}
+
+input[type="submit"], button {
+	cursor: pointer; 
+	border: none; 
+	display: inline-block; 
+	background: #99b3cc;
+	padding: 3px 8px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px; 
+	border-radius: 3px;
+	font-size: 11px;
+	margin: 2px;
+}
+
+input[type="submit"]:hover, button:hover  {
+	background:#333; 
+	color: #fff;
+}
+
+input[type="submit"]:disabled, input[type="submit"]:disabled:hover {
+	cursor: default; 
+	border: none; 
+	display: inline-block; 
+	background: #99b3cc;
+	padding: 3px 8px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px; 
+	border-radius: 3px;
+	font-size: 11px;
+	margin: 2px;
+	color: gray;
+}
+
+#upload_progress_bar {
+  display: inline-block;
+  padding: 0px;
+  width: 150px;
+  height: 10px;
+  clear: both;
+  opacity: 0;
+  -moz-transition: opacity .5s linear;
+  -o-transition: opacity .5s linear;
+  -webkit-transition: opacity .5s linear;
+}
+#upload_progress_bar.loading {
+  opacity: 1.0;
+}
+#upload_progress_bar .percent {
+  height: 0px;
+  border-bottom: 6px dotted #99ccff;
+  width: 0px;
+  overflow: hidden;
+}

@@ -1,0 +1,6 @@
+name = "IBH Epidemiology Ordinances Viewer"
+description = "Integrates Google Maps with epidemiology ordinance information."
+core = "7.x"
+version = "7.x-1.5"
+core = "7.x"
+package = "ibh_epidemiology"

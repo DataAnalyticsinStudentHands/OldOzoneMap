@@ -1,0 +1,1 @@
+parseResponse1243726200({"status":{"type":"fail","message":"No data for timestamp 1243726200"}})

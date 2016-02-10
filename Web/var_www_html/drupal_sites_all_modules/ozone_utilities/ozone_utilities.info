@@ -1,0 +1,6 @@
+name = Ozone Utilities
+description = Miscellaneous functionality not suitable for Theme files. Example: default View includes.
+core = 7.x
+version = "7.x-1.x"
+core = "7.x"
+package = "ozone"

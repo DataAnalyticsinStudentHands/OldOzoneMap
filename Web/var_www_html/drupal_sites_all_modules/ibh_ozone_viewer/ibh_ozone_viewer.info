@@ -1,0 +1,6 @@
+name = "IBH Ozone Viewer"
+description = "Integrates Google Maps with Ozone Layer data."
+core = "7.x"
+version = "7.x-1.5"
+core = "7.x"
+package = "ibh_ozone"
