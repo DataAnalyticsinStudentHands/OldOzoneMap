@@ -74,7 +74,7 @@ $useGzip = false;
 // pad with JSONP -- TMH 2012/07/20
 $useJSONP = true;
 // keep history -- TMH 2012/08/31
-$keepHistory = true;
+$keepHistory = false;
 
 // grid Updated time
 $updatedTime = -1;
@@ -170,9 +170,9 @@ if ($writeToGridStatus) {
       }
     }
 */
-	
+
 	$gridStart = microtime(true);
-	
+
     $gridData = $queryManager->loadGrid($timestamp, $gridReference);
 
     if (empty($gridData['timestamp'])) {

@@ -65,7 +65,7 @@ $useGzip = false;
 // pad with JSONP -- TMH 2012/07/20
 $useJSONP = true;
 // keep history -- TMH 2012/08/31
-$keepHistory = true;
+$keepHistory = false;
 
 // grid Updated time
 $updatedTime = -1;
@@ -137,7 +137,7 @@ if ($bandHelper->getSchemeId() == 0) {
     }
     $queryTime += microtime(true) - $queryStart;
 }
-if ($writeToGridStatus && false) { 
+if ($writeToGridStatus && false) {
     $r = $driver->getContours(
         $allData["{$param}Stations"], $allData['windStations'],
         $allData["{$param}Values"], $allData['windSpeed'],
